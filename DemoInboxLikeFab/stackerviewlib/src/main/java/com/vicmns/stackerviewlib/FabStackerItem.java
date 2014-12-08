@@ -6,7 +6,7 @@ import android.view.View;
 /**
 * Created by vicmns on 12/8/2014.
 */
-public class FabListModelItem {
+public class FabStackerItem {
     public static final int FAB_NORMAL_TYPE = 0;
     public static final int FAB_SMALL_TYPE = 1;
 
@@ -18,11 +18,11 @@ public class FabListModelItem {
     private Drawable fabBackgroundDrawable;
     private View.OnClickListener fabClickListener;
 
-    public FabListModelItem() {
+    public FabStackerItem() {
 
     }
 
-    public FabListModelItem(int fabType, String fabTag) {
+    public FabStackerItem(int fabType, String fabTag) {
         this.fabType = fabType;
         this.fabTag = fabTag;
     }
@@ -84,49 +84,49 @@ public class FabListModelItem {
     }
 
     public static class Builder {
-        private FabListModelItem fabListModelItem;
+        private FabStackerItem fabStackerItem;
 
         public Builder(){
-            fabListModelItem = new FabListModelItem();
+            fabStackerItem = new FabStackerItem();
         }
 
         public Builder setFabType(int fabType) {
-            fabListModelItem.setFabType(fabType);
+            fabStackerItem.setFabType(fabType);
             return this;
         }
 
         public Builder setFabTag(String fabTag) {
-            fabListModelItem.setFabTag(fabTag);
+            fabStackerItem.setFabTag(fabTag);
             return this;
         }
 
         public Builder setFabResourceId(int fabResId) {
-            fabListModelItem.setFabResId(fabResId);
+            fabStackerItem.setFabResId(fabResId);
             return this;
         }
 
         public Builder setFabBackgroundResId(int fabBackgroundResId) {
-            fabListModelItem.setFabBackgroundResId(fabBackgroundResId);
+            fabStackerItem.setFabBackgroundResId(fabBackgroundResId);
             return this;
         }
 
         public Builder setFabResDrawable(Drawable fabResDrawable) {
-            fabListModelItem.setFabResDrawable(fabResDrawable);
+            fabStackerItem.setFabResDrawable(fabResDrawable);
             return this;
         }
 
         public Builder setFabBackgroundDrawable(Drawable fabBackgroundDrawable) {
-            fabListModelItem.setFabBackgroundDrawable(fabBackgroundDrawable);
+            fabStackerItem.setFabBackgroundDrawable(fabBackgroundDrawable);
             return this;
         }
 
         public Builder setFabClickListener(View.OnClickListener fabClickListener) {
-            fabListModelItem.setFabClickListener(fabClickListener);
+            fabStackerItem.setFabClickListener(fabClickListener);
             return this;
         }
 
-        public FabListModelItem build() {
-            return fabListModelItem;
+        public FabStackerItem build() {
+            return fabStackerItem;
         }
     }
 }

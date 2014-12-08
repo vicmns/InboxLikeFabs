@@ -2,7 +2,6 @@ package com.vicmns.stackerviewlib;
 
 import android.app.Activity;
 import android.content.Context;
-import android.media.Image;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -135,23 +134,23 @@ public class FabStackerView {
         return px / context.getResources().getDisplayMetrics().density;
     }
 
-    public void initAnchoredFab(FabListModelItem fabListModelItem) {
-        if(fabListModelItem.getFabResDrawable() != null) {
-            mMainFabImageView.setImageDrawable(fabListModelItem.getFabResDrawable());
+    public void initAnchoredFab(FabStackerItem fabStackerItem) {
+        if(fabStackerItem.getFabResDrawable() != null) {
+            mMainFabImageView.setImageDrawable(fabStackerItem.getFabResDrawable());
         } else {
-            mMainFabImageView.setImageResource(fabListModelItem.getFabResId());
+            mMainFabImageView.setImageResource(fabStackerItem.getFabResId());
         }
 
-        if(fabListModelItem.getFabBackgroundDrawable() != null) {
-            mMainFab.setBackground(fabListModelItem.getFabBackgroundDrawable());
+        if(fabStackerItem.getFabBackgroundDrawable() != null) {
+            mMainFab.setBackground(fabStackerItem.getFabBackgroundDrawable());
         } else {
-            mMainFab.setBackgroundResource(fabListModelItem.getFabBackgroundResId());
+            mMainFab.setBackgroundResource(fabStackerItem.getFabBackgroundResId());
         }
 
-        mMainFabTag.setText(fabListModelItem.getFabTag());
+        mMainFabTag.setText(fabStackerItem.getFabTag());
 
-        if(fabListModelItem.getFabClickListener() != null) {
-            mMainFab.setOnClickListener(fabListModelItem.getFabClickListener());
+        if(fabStackerItem.getFabClickListener() != null) {
+            mMainFab.setOnClickListener(fabStackerItem.getFabClickListener());
         }
     }
 
@@ -295,8 +294,8 @@ public class FabStackerView {
             attachStackerView(fabStackerView, mViewToAttach);
         }
 
-        public Builder initAnchoredFab(FabListModelItem fabListModelItem) {
-            fabStackerView.initAnchoredFab(fabListModelItem);
+        public Builder initAnchoredFab(FabStackerItem fabStackerItem) {
+            fabStackerView.initAnchoredFab(fabStackerItem);
             return this;
         }
 

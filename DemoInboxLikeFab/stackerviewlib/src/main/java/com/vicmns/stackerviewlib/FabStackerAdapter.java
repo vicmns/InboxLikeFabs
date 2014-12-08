@@ -19,22 +19,22 @@ import java.util.List;
 /**
  * Created by vicmns on 12/2/2014.
  */
-public class FabListAdapter extends RecyclerView.Adapter<FabListAdapter.FabViewHolder> {
+public class FabStackerAdapter extends RecyclerView.Adapter<FabStackerAdapter.FabViewHolder> {
     private static final int ANIMATION_DELAY = 25;
 
-    private List<FabListModelItem> mFabListModelItems;
+    private List<FabStackerItem> mFabStackerItems;
 
-    public FabListAdapter() {
-        mFabListModelItems = new ArrayList<>();
+    public FabStackerAdapter() {
+        mFabStackerItems = new ArrayList<>();
     }
 
-    public void setFabListModel(List<FabListModelItem> fabListModelItems) {
-        mFabListModelItems = fabListModelItems;
+    public void setFabListModel(List<FabStackerItem> fabStackerItems) {
+        mFabStackerItems = fabStackerItems;
     }
 
     @Override
     public FabViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(viewType == FabListModelItem.FAB_NORMAL_TYPE)
+        if(viewType == FabStackerItem.FAB_NORMAL_TYPE)
             return new FabViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.fab_normal_list_item, parent, false));
         else
             return new FabViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.fab_small_list_item, parent, false));
@@ -42,31 +42,31 @@ public class FabListAdapter extends RecyclerView.Adapter<FabListAdapter.FabViewH
 
     @Override
     public void onBindViewHolder(FabViewHolder holder, int position) {
-        setFabSourceDrawable(holder, mFabListModelItems.get(position));
-        setFabBackgroundDrawable(holder, mFabListModelItems.get(position));
-        setFabTag(holder, mFabListModelItems.get(position));
+        setFabSourceDrawable(holder, mFabStackerItems.get(position));
+        setFabBackgroundDrawable(holder, mFabStackerItems.get(position));
+        setFabTag(holder, mFabStackerItems.get(position));
         animateFabView(holder.fab, position);
         animateFabTagView(holder.fabTagCard, position);
     }
 
-    private void setFabSourceDrawable(FabViewHolder holder, FabListModelItem fabListModelItem) {
-        if(fabListModelItem.getFabResDrawable() != null) {
-            holder.fabImageView.setImageDrawable(fabListModelItem.getFabResDrawable());
+    private void setFabSourceDrawable(FabViewHolder holder, FabStackerItem fabStackerItem) {
+        if(fabStackerItem.getFabResDrawable() != null) {
+            holder.fabImageView.setImageDrawable(fabStackerItem.getFabResDrawable());
         } else {
-            holder.fabImageView.setImageResource(fabListModelItem.getFabResId());
+            holder.fabImageView.setImageResource(fabStackerItem.getFabResId());
         }
     }
 
-    private void setFabBackgroundDrawable(FabViewHolder holder, FabListModelItem fabListModelItem) {
-        if(fabListModelItem.getFabBackgroundDrawable() != null) {
-            holder.fab.setBackground(fabListModelItem.getFabBackgroundDrawable());
+    private void setFabBackgroundDrawable(FabViewHolder holder, FabStackerItem fabStackerItem) {
+        if(fabStackerItem.getFabBackgroundDrawable() != null) {
+            holder.fab.setBackground(fabStackerItem.getFabBackgroundDrawable());
         } else {
-            holder.fab.setBackgroundResource(fabListModelItem.getFabBackgroundResId());
+            holder.fab.setBackgroundResource(fabStackerItem.getFabBackgroundResId());
         }
     }
 
-    private void setFabTag(FabViewHolder holder, FabListModelItem fabListModelItem) {
-        holder.fabTag.setText(fabListModelItem.getFabTag());
+    private void setFabTag(FabViewHolder holder, FabStackerItem fabStackerItem) {
+        holder.fabTag.setText(fabStackerItem.getFabTag());
     }
 
 
@@ -155,12 +155,12 @@ public class FabListAdapter extends RecyclerView.Adapter<FabListAdapter.FabViewH
 
     @Override
     public int getItemViewType(int position) {
-        return mFabListModelItems.get(position).getFabType();
+        return mFabStackerItems.get(position).getFabType();
     }
 
     @Override
     public int getItemCount() {
-        return mFabListModelItems.size();
+        return mFabStackerItems.size();
     }
 
     public class FabViewHolder extends RecyclerView.ViewHolder {
@@ -180,8 +180,8 @@ public class FabListAdapter extends RecyclerView.Adapter<FabListAdapter.FabViewH
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mFabListModelItems.get(getPosition()).getFabClickListener() != null) {
-                        mFabListModelItems.get(getPosition()).getFabClickListener().onClick(v);
+                    if(mFabStackerItems.get(getPosition()).getFabClickListener() != null) {
+                        mFabStackerItems.get(getPosition()).getFabClickListener().onClick(v);
                     }
                 }
             });

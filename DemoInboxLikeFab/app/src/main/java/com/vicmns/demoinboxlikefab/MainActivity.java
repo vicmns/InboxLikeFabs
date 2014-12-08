@@ -1,16 +1,14 @@
 package com.vicmns.demoinboxlikefab;
 
-import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vicmns.stackerviewlib.FabListAdapter;
-import com.vicmns.stackerviewlib.FabListModelItem;
+import com.vicmns.stackerviewlib.FabStackerAdapter;
+import com.vicmns.stackerviewlib.FabStackerItem;
 import com.vicmns.stackerviewlib.FabStackerView;
 
 import java.util.ArrayList;
@@ -19,7 +17,7 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
     private FabStackerView mFabStackerView;
-    private List<FabListModelItem> mFabListModelItems;
+    private List<FabStackerItem> mFabStackerItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +25,12 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab_1);
-        FabListAdapter fabListAdapter = new FabListAdapter();
+        FabStackerAdapter fabStackerAdapter = new FabStackerAdapter();
 
-        mFabListModelItems = new ArrayList<>();
+        mFabStackerItems = new ArrayList<>();
         //mFabListModelItems.add(new FabListModelItem(FabListModelItem.FAB_NORMAL_TYPE, "NOT SMALL!!!"));
-        mFabListModelItems.add(new FabListModelItem.Builder()
-                .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 1")
+        mFabStackerItems.add(new FabStackerItem.Builder()
+                .setFabType(FabStackerItem.FAB_SMALL_TYPE).setFabTag("Small Fab 1")
                 .setFabResourceId(R.drawable.fab_icons)
                 .setFabBackgroundResId(R.drawable.fab_background)
                 .setFabClickListener(new View.OnClickListener() {
@@ -42,8 +40,8 @@ public class MainActivity extends ActionBarActivity {
                     }
                 })
                 .build());
-        mFabListModelItems.add(new FabListModelItem.Builder()
-                .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 2")
+        mFabStackerItems.add(new FabStackerItem.Builder()
+                .setFabType(FabStackerItem.FAB_SMALL_TYPE).setFabTag("Small Fab 2")
                 .setFabResourceId(R.drawable.fab_icons)
                 .setFabBackgroundResId(R.drawable.fab_background)
                 .setFabClickListener(new View.OnClickListener() {
@@ -53,8 +51,8 @@ public class MainActivity extends ActionBarActivity {
                     }
                 })
                 .build());
-        mFabListModelItems.add(new FabListModelItem.Builder()
-                .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 3")
+        mFabStackerItems.add(new FabStackerItem.Builder()
+                .setFabType(FabStackerItem.FAB_SMALL_TYPE).setFabTag("Small Fab 3")
                 .setFabResourceId(R.drawable.fab_icons)
                 .setFabBackgroundResId(R.drawable.fab_background)
                 .setFabClickListener(new View.OnClickListener() {
@@ -64,8 +62,8 @@ public class MainActivity extends ActionBarActivity {
                     }
                 })
                 .build());
-        mFabListModelItems.add(new FabListModelItem.Builder()
-                .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 4")
+        mFabStackerItems.add(new FabStackerItem.Builder()
+                .setFabType(FabStackerItem.FAB_SMALL_TYPE).setFabTag("Small Fab 4")
                 .setFabResourceId(R.drawable.fab_icons)
                 .setFabBackgroundResId(R.drawable.fab_background)
                 .setFabClickListener(new View.OnClickListener() {
@@ -75,15 +73,15 @@ public class MainActivity extends ActionBarActivity {
                     }
                 })
                 .build());
-        mFabListModelItems.add(new FabListModelItem.Builder()
-                .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 5")
+        mFabStackerItems.add(new FabStackerItem.Builder()
+                .setFabType(FabStackerItem.FAB_SMALL_TYPE).setFabTag("Small Fab 5")
                 .setFabResourceId(R.drawable.fab_icons)
                 .setFabBackgroundResId(R.drawable.fab_background).build());
 
-        fabListAdapter.setFabListModel(mFabListModelItems);
+        fabStackerAdapter.setFabListModel(mFabStackerItems);
 
         mFabStackerView = new FabStackerView.Builder(this)
-                .initAnchoredFab(new FabListModelItem.Builder()
+                .initAnchoredFab(new FabStackerItem.Builder()
                         .setFabTag("Main Fab!")
                         .setFabResourceId(R.drawable.fab_icons)
                         .setFabBackgroundResId(R.drawable.fab_background)
@@ -96,7 +94,7 @@ public class MainActivity extends ActionBarActivity {
                         .build())
                 .anchorStackToFab(fab1).build();
 
-        mFabStackerView.setFabAdapter(fabListAdapter);
+        mFabStackerView.setFabAdapter(fabStackerAdapter);
 
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
