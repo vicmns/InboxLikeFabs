@@ -1,4 +1,4 @@
-package com.vicmns.demoinboxlikefab;
+package com.vicmns.stackerviewlib;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;

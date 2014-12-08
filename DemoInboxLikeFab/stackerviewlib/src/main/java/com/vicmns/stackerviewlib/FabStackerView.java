@@ -1,4 +1,4 @@
-package com.vicmns.demoinboxlikefab;
+package com.vicmns.stackerviewlib;
 
 import android.app.Activity;
 import android.content.Context;
