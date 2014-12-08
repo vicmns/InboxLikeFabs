@@ -14,11 +14,12 @@
         android:layout_above="@+id/fab_item"
         android:choiceMode="singleChoice"
         android:overScrollMode="never"
+        android:layout_marginBottom="@dimen/fab_recycler_view_bottom_margin"
         android:requiresFadingEdge="none"
         android:layout_alignRight="@+id/fab_item"
         android:layout_alignEnd="@+id/fab_item" />
 
-    <com.vicmns.demoinboxlikefab.FloatingActionButton
+    <com.vicmns.stackerviewlib.FloatingActionButton
         android:id="@+id/fab_item"
         android:layout_width="@dimen/fab_size"
         android:layout_height="@dimen/fab_size"
@@ -36,7 +37,7 @@
             android:layout_gravity="center"
             android:duplicateParentState="true" />
 
-    </com.vicmns.demoinboxlikefab.FloatingActionButton>
+    </com.vicmns.stackerviewlib.FloatingActionButton>
 
 
     <FrameLayout
