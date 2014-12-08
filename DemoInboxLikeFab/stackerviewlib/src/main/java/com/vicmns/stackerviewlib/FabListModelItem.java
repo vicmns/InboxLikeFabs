@@ -1,6 +1,7 @@
 package com.vicmns.stackerviewlib;
 
 import android.graphics.drawable.Drawable;
+import android.view.View;
 
 /**
 * Created by vicmns on 12/8/2014.
@@ -15,6 +16,7 @@ public class FabListModelItem {
     private int fabBackgroundResId = -1;
     private Drawable fabResDrawable;
     private Drawable fabBackgroundDrawable;
+    private View.OnClickListener fabClickListener;
 
     public FabListModelItem() {
 
@@ -73,6 +75,14 @@ public class FabListModelItem {
         this.fabBackgroundDrawable = fabBackgroundDrawable;
     }
 
+    public View.OnClickListener getFabClickListener() {
+        return fabClickListener;
+    }
+
+    public void setFabClickListener(View.OnClickListener fabClickListener) {
+        this.fabClickListener = fabClickListener;
+    }
+
     public static class Builder {
         private FabListModelItem fabListModelItem;
 
@@ -107,6 +117,11 @@ public class FabListModelItem {
 
         public Builder setFabBackgroundDrawable(Drawable fabBackgroundDrawable) {
             fabListModelItem.setFabBackgroundDrawable(fabBackgroundDrawable);
+            return this;
+        }
+
+        public Builder setFabClickListener(View.OnClickListener fabClickListener) {
+            fabListModelItem.setFabClickListener(fabClickListener);
             return this;
         }
 

@@ -149,6 +149,10 @@ public class FabStackerView {
         }
 
         mMainFabTag.setText(fabListModelItem.getFabTag());
+
+        if(fabListModelItem.getFabClickListener() != null) {
+            mMainFab.setOnClickListener(fabListModelItem.getFabClickListener());
+        }
     }
 
     public void setMainFabPosition(View attachingFab) {

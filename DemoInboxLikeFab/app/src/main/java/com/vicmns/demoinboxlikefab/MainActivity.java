@@ -1,10 +1,13 @@
 package com.vicmns.demoinboxlikefab;
 
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vicmns.stackerviewlib.FabListAdapter;
 import com.vicmns.stackerviewlib.FabListModelItem;
@@ -31,37 +34,74 @@ public class MainActivity extends ActionBarActivity {
         mFabListModelItems.add(new FabListModelItem.Builder()
                 .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 1")
                 .setFabResourceId(R.drawable.fab_icons)
-                .setFabBackgroundResId(R.drawable.fab_background).build());
+                .setFabBackgroundResId(R.drawable.fab_background)
+                .setFabClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this, "Small Fab 1", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .build());
         mFabListModelItems.add(new FabListModelItem.Builder()
                 .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 2")
                 .setFabResourceId(R.drawable.fab_icons)
-                .setFabBackgroundResId(R.drawable.fab_background).build());
+                .setFabBackgroundResId(R.drawable.fab_background)
+                .setFabClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this, "Small Fab 2", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .build());
         mFabListModelItems.add(new FabListModelItem.Builder()
                 .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 3")
                 .setFabResourceId(R.drawable.fab_icons)
-                .setFabBackgroundResId(R.drawable.fab_background).build());
+                .setFabBackgroundResId(R.drawable.fab_background)
+                .setFabClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this, "Small Fab 3", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .build());
         mFabListModelItems.add(new FabListModelItem.Builder()
                 .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 4")
                 .setFabResourceId(R.drawable.fab_icons)
-                .setFabBackgroundResId(R.drawable.fab_background).build());
+                .setFabBackgroundResId(R.drawable.fab_background)
+                .setFabClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(MainActivity.this, "Small Fab 4", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .build());
         mFabListModelItems.add(new FabListModelItem.Builder()
                 .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Small Fab 5")
                 .setFabResourceId(R.drawable.fab_icons)
                 .setFabBackgroundResId(R.drawable.fab_background).build());
 
         fabListAdapter.setFabListModel(mFabListModelItems);
+
         mFabStackerView = new FabStackerView.Builder(this)
                 .initAnchoredFab(new FabListModelItem.Builder()
-                    .setFabType(FabListModelItem.FAB_SMALL_TYPE).setFabTag("Main Fab!")
-                    .setFabResourceId(R.drawable.fab_icons)
-                    .setFabBackgroundResId(R.drawable.fab_background).build())
+                        .setFabTag("Main Fab!")
+                        .setFabResourceId(R.drawable.fab_icons)
+                        .setFabBackgroundResId(R.drawable.fab_background)
+                        .setFabClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Main Toast!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .build())
                 .anchorStackToFab(fab1).build();
+
         mFabStackerView.setFabAdapter(fabListAdapter);
 
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mFabStackerView.isStackerVisible()) mFabStackerView.hideStacker();
+                if (mFabStackerView.isStackerVisible()) mFabStackerView.hideStacker();
                 else mFabStackerView.showStacker();
             }
         });
@@ -77,7 +117,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(mFabStackerView != null && !mFabStackerView.handleBackPress())
+        if (mFabStackerView != null && !mFabStackerView.handleBackPress())
             super.onBackPressed();
     }
 

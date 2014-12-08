@@ -177,6 +177,14 @@ public class FabListAdapter extends RecyclerView.Adapter<FabListAdapter.FabViewH
             fabImageView = (ImageView) fab.getChildAt(0);
             fabTagCard = parentView.findViewById(R.id.fab_tag_item_card);
             fabTag = (TextView) parentView.findViewById(R.id.fab_tag_item);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mFabListModelItems.get(getPosition()).getFabClickListener() != null) {
+                        mFabListModelItems.get(getPosition()).getFabClickListener().onClick(v);
+                    }
+                }
+            });
         }
     }
 
