@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 /**
  * Created by vicmns on 12/1/2014.
  */
-public class FabListHandler {
+public class FabStackerView {
     /**
      * Max allowed duration for a "click", in milliseconds.
      */
@@ -27,8 +27,6 @@ public class FabListHandler {
      * Max allowed distance to move during a "click", in DP.
      */
     private static final int MAX_CLICK_DISTANCE = 15;
-
-    private ViewGroup mViewToAttach;
     private View mMainView;
     private RecyclerView mFabRecyclerView;
     private RecyclerView.Adapter<?> mFabAdapter;
@@ -39,28 +37,35 @@ public class FabListHandler {
     private float pressedX;
     private float pressedY;
 
-    public FabListHandler(ViewGroup viewToAttach) {
-        mViewToAttach = viewToAttach;
-        initFabList();
+    public FabStackerView() {
+    }
+
+    public static void attachStackerView(FabStackerView fabStackerView, ViewGroup parentView) {
+        fabStackerView.initFabStackerView(parentView);
+    }
+
+    public void initFabStackerView(ViewGroup parentView) {
+        initViews(parentView);
         initAnimators();
         setupRecyclerView();
     }
 
-    private void initFabList() {
-        LayoutInflater layoutInflater = LayoutInflater.from(mViewToAttach.getContext());
-        mMainView = layoutInflater.inflate(R.layout.fab_list_layout, mViewToAttach, false);
-        mMainView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                setFabListVisibility(View.GONE, true);
-                return true;
-            }
-        });
-        mViewToAttach.addView(mMainView);
+    private void initViews(ViewGroup parentView) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parentView.getContext());
+        mMainView = layoutInflater.inflate(R.layout.fab_list_layout, parentView, false);
         mMainFabItemLayout = mMainView.findViewById(R.id.fab_item_main_layout);
         mMainFab = mMainView.findViewById(R.id.fab_item);
         mMainFabTag = mMainView.findViewById(R.id.fab_tag_item);
         mMainView.setVisibility(View.GONE);
+        parentView.addView(mMainView);
+
+        mMainView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideStacker();
+                return true;
+            }
+        });
     }
 
     private void initAnimators() {
@@ -94,7 +99,7 @@ public class FabListHandler {
                         if (pressDuration < MAX_CLICK_DURATION &&
                                 distance(pressedX, pressedY, event.getX(),
                                         event.getY(), v.getContext()) < MAX_CLICK_DISTANCE) {
-                            setFabListVisibility(View.GONE);
+                            hideStacker();
                             return true;
                         }
                     }
@@ -107,9 +112,6 @@ public class FabListHandler {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mMainView.getContext());
         //linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
-
-        //mFabRecyclerView.setLayoutAnimation(controller);
-        //mFabRecyclerView.setItemAnimator(new SlideInOutLeftItemAnimator(mFabRecyclerView));
         mFabRecyclerView.setLayoutManager(linearLayoutManager);
         mFabRecyclerView.setHasFixedSize(true);
     }
@@ -123,6 +125,19 @@ public class FabListHandler {
 
     private static float pxToDp(float px, Context context) {
         return px / context.getResources().getDisplayMetrics().density;
+    }
+
+    public void setMainFabPosition(View attachingFab) {
+        ViewGroup.MarginLayoutParams mMainFabLayoutParams = (ViewGroup.MarginLayoutParams) mMainFab.getLayoutParams();
+        ViewGroup.MarginLayoutParams attachingFabLayoutParams = (ViewGroup.MarginLayoutParams) attachingFab.getLayoutParams();
+        mMainFabLayoutParams.topMargin = attachingFabLayoutParams.topMargin;
+        mMainFabLayoutParams.bottomMargin = attachingFabLayoutParams.bottomMargin;
+        mMainFabLayoutParams.leftMargin = attachingFabLayoutParams.leftMargin;
+        mMainFabLayoutParams.rightMargin = attachingFabLayoutParams.rightMargin;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mMainFabLayoutParams.setMarginStart(attachingFabLayoutParams.getMarginStart());
+            mMainFabLayoutParams.setMarginEnd(attachingFabLayoutParams.getMarginEnd());
+        }
     }
 
     public void initFabListView(View fabToAnchor) {
@@ -151,11 +166,24 @@ public class FabListHandler {
         return mFabAdapter;
     }
 
-    public void setFabListVisibility(int visibility) {
-        setFabListVisibility(visibility, false);
+
+    public void hideStacker() {
+        setFabListVisibility(View.INVISIBLE, true);
     }
 
-    public void setFabListVisibility(int visibility, boolean showAnimation) {
+    public void hideStackerInmediate() {
+        setFabListVisibility(View.INVISIBLE, false);
+    }
+
+    public void showStacker() {
+        setFabListVisibility(View.VISIBLE, true);
+    }
+
+    public void showStacketInmediate() {
+        setFabListVisibility(View.VISIBLE, false);
+    }
+
+    private void setFabListVisibility(int visibility, boolean showAnimation) {
         if (visibility == mMainView.getVisibility())
             return;
 
@@ -215,16 +243,37 @@ public class FabListHandler {
         mMainFab.startAnimation(mRotateLeftAnimation);
     }
 
-    public int getFabListVisibility() {
-        return mMainView.getVisibility();
+    public boolean isStackerVisible() {
+        return mMainView.getVisibility() == View.VISIBLE;
     }
 
     public boolean handleBackPress() {
-        if (getFabListVisibility() == View.VISIBLE) {
-            setFabListVisibility(View.GONE, true);
+        if (isStackerVisible()) {
+            hideStacker();
             return true;
         }
 
         return false;
+    }
+
+    public static class Builder {
+        private FabStackerView fabStackerView;
+        private Context mContext;
+        private ViewGroup mViewToAttach;
+
+        public Builder(Activity activity) {
+            fabStackerView = new FabStackerView();
+            mViewToAttach = (ViewGroup) activity.findViewById(android.R.id.content);
+            attachStackerView(fabStackerView, mViewToAttach);
+        }
+
+        public Builder anchorStackToFab(View fabToAnchor) {
+            fabStackerView.setMainFabPosition(fabToAnchor);
+            return this;
+        }
+
+        public FabStackerView build() {
+            return fabStackerView;
+        }
     }
 }

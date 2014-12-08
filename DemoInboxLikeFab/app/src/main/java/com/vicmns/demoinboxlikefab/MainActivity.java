@@ -5,31 +5,30 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 
 public class MainActivity extends ActionBarActivity {
-    private FabListHandler mFabListHandler;
+    private FabStackerView mFabStackerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFabListHandler = new FabListHandler((ViewGroup) findViewById(android.R.id.content));
-        FabListAdapter fabListAdapter = new FabListAdapter();
-        mFabListHandler.setFabAdapter(fabListAdapter);
-
         FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab_1);
+        FabListAdapter fabListAdapter = new FabListAdapter();
+
+
+        mFabStackerView = new FabStackerView.Builder(this).anchorStackToFab(fab1).build();
+        mFabStackerView.setFabAdapter(fabListAdapter);
+
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mFabListHandler.getFabListVisibility() != View.VISIBLE) mFabListHandler.setFabListVisibility(View.VISIBLE, true);
-                else mFabListHandler.setFabListVisibility(View.GONE, true);
+                if(mFabStackerView.isStackerVisible()) mFabStackerView.showStacker();
+                else mFabStackerView.hideStacker();
             }
         });
-
-        mFabListHandler.initFabListView(fab1);
     }
 
 
@@ -42,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(mFabListHandler != null && !mFabListHandler.handleBackPress())
+        if(mFabStackerView != null && !mFabStackerView.handleBackPress())
             super.onBackPressed();
     }
 
