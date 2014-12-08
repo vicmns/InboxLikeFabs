@@ -2,6 +2,7 @@ package com.vicmns.stackerviewlib;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.Image;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +13,11 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.vicmns.myapplication.R;
 
 /**
  * Created by vicmns on 12/1/2014.
@@ -30,7 +35,9 @@ public class FabStackerView {
     private View mMainView;
     private RecyclerView mFabRecyclerView;
     private RecyclerView.Adapter<?> mFabAdapter;
-    private View mMainFab, mMainFabTag, mMainFabItemLayout;
+    private View mMainFab, mMainFabItemLayout;
+    private ImageView mMainFabImageView;
+    private TextView mMainFabTag;
     private Animation mRotateRightAnimation, mRotateLeftAnimation, mAppearAnimation, mHideAnimation;
 
     private long pressStartTime;
@@ -55,7 +62,8 @@ public class FabStackerView {
         mMainView = layoutInflater.inflate(R.layout.fab_list_layout, parentView, false);
         mMainFabItemLayout = mMainView.findViewById(R.id.fab_item_main_layout);
         mMainFab = mMainView.findViewById(R.id.fab_item);
-        mMainFabTag = mMainView.findViewById(R.id.fab_tag_item);
+        mMainFabImageView = (ImageView) mMainFab.findViewById(R.id.fab_item_image_view);
+        mMainFabTag =  (TextView) mMainView.findViewById(R.id.fab_tag_item);
         mMainView.setVisibility(View.GONE);
         parentView.addView(mMainView);
 
@@ -125,6 +133,22 @@ public class FabStackerView {
 
     private static float pxToDp(float px, Context context) {
         return px / context.getResources().getDisplayMetrics().density;
+    }
+
+    public void initAnchoredFab(FabListModelItem fabListModelItem) {
+        if(fabListModelItem.getFabResDrawable() != null) {
+            mMainFabImageView.setImageDrawable(fabListModelItem.getFabResDrawable());
+        } else {
+            mMainFabImageView.setImageResource(fabListModelItem.getFabResId());
+        }
+
+        if(fabListModelItem.getFabBackgroundDrawable() != null) {
+            mMainFab.setBackground(fabListModelItem.getFabBackgroundDrawable());
+        } else {
+            mMainFab.setBackgroundResource(fabListModelItem.getFabBackgroundResId());
+        }
+
+        mMainFabTag.setText(fabListModelItem.getFabTag());
     }
 
     public void setMainFabPosition(View attachingFab) {
@@ -265,6 +289,11 @@ public class FabStackerView {
             fabStackerView = new FabStackerView();
             mViewToAttach = (ViewGroup) activity.findViewById(android.R.id.content);
             attachStackerView(fabStackerView, mViewToAttach);
+        }
+
+        public Builder initAnchoredFab(FabListModelItem fabListModelItem) {
+            fabStackerView.initAnchoredFab(fabListModelItem);
+            return this;
         }
 
         public Builder anchorStackToFab(View fabToAnchor) {

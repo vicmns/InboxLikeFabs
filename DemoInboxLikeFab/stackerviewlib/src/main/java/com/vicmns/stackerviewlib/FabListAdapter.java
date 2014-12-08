@@ -3,7 +3,6 @@ package com.vicmns.stackerviewlib;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,8 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.vicmns.myapplication.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,37 +22,14 @@ import java.util.List;
 public class FabListAdapter extends RecyclerView.Adapter<FabListAdapter.FabViewHolder> {
     private static final int ANIMATION_DELAY = 25;
 
-    public static class FabListModelItem {
-        public static final int FAB_NORMAL_TYPE = 0;
-        public static final int FAB_SMALL_TYPE = 1;
-
-        int fabType;
-        String fabTag;
-        int fabResId = -1;
-        int fabBackgroundResId = -1;
-        Drawable fabDrawable;
-        Drawable fabBackground;
-
-        public FabListModelItem() {
-
-        }
-
-        public FabListModelItem(int fabType, String fabTag) {
-            this.fabType = fabType;
-            this.fabTag = fabTag;
-        }
-    }
-
     private List<FabListModelItem> mFabListModelItems;
 
     public FabListAdapter() {
         mFabListModelItems = new ArrayList<>();
-        //mFabListModelItems.add(new FabListModelItem(FabListModelItem.FAB_NORMAL_TYPE, "NOT SMALL!!!"));
-        mFabListModelItems.add(new FabListModelItem(FabListModelItem.FAB_SMALL_TYPE, "Small Fab 1"));
-        mFabListModelItems.add(new FabListModelItem(FabListModelItem.FAB_SMALL_TYPE, "Small Fab 2"));
-        mFabListModelItems.add(new FabListModelItem(FabListModelItem.FAB_SMALL_TYPE, "Small Fab 3"));
-        mFabListModelItems.add(new FabListModelItem(FabListModelItem.FAB_SMALL_TYPE, "Small Fab 4"));
-        mFabListModelItems.add(new FabListModelItem(FabListModelItem.FAB_SMALL_TYPE, "Small Fab 5"));
+    }
+
+    public void setFabListModel(List<FabListModelItem> fabListModelItems) {
+        mFabListModelItems = fabListModelItems;
     }
 
     @Override
@@ -64,13 +42,31 @@ public class FabListAdapter extends RecyclerView.Adapter<FabListAdapter.FabViewH
 
     @Override
     public void onBindViewHolder(FabViewHolder holder, int position) {
+        setFabSourceDrawable(holder, mFabListModelItems.get(position));
+        setFabBackgroundDrawable(holder, mFabListModelItems.get(position));
         setFabTag(holder, mFabListModelItems.get(position));
         animateFabView(holder.fab, position);
         animateFabTagView(holder.fabTagCard, position);
     }
 
+    private void setFabSourceDrawable(FabViewHolder holder, FabListModelItem fabListModelItem) {
+        if(fabListModelItem.getFabResDrawable() != null) {
+            holder.fabImageView.setImageDrawable(fabListModelItem.getFabResDrawable());
+        } else {
+            holder.fabImageView.setImageResource(fabListModelItem.getFabResId());
+        }
+    }
+
+    private void setFabBackgroundDrawable(FabViewHolder holder, FabListModelItem fabListModelItem) {
+        if(fabListModelItem.getFabBackgroundDrawable() != null) {
+            holder.fab.setBackground(fabListModelItem.getFabBackgroundDrawable());
+        } else {
+            holder.fab.setBackgroundResource(fabListModelItem.getFabBackgroundResId());
+        }
+    }
+
     private void setFabTag(FabViewHolder holder, FabListModelItem fabListModelItem) {
-        holder.fabTag.setText(fabListModelItem.fabTag);
+        holder.fabTag.setText(fabListModelItem.getFabTag());
     }
 
 
@@ -159,7 +155,7 @@ public class FabListAdapter extends RecyclerView.Adapter<FabListAdapter.FabViewH
 
     @Override
     public int getItemViewType(int position) {
-        return mFabListModelItems.get(position).fabType;
+        return mFabListModelItems.get(position).getFabType();
     }
 
     @Override

@@ -1,1 +1,1 @@
-include ':app', ':fabmenu'
+include ':app', ':stackerviewlib'

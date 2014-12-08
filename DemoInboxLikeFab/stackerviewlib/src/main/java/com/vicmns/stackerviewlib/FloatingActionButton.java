@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.vicmns.demoinboxlikefab;
+package com.vicmns.stackerviewlib;
 
 import android.content.Context;
 import android.graphics.Outline;
