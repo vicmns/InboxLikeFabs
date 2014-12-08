@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fab_item_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/fab_tag_item_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fab_list_item_tag_margin"
+            android:layout_marginRight="@dimen/fab_list_item_tag_margin"
+            android:clickable="true"
+            android:layout_gravity="end"
+            android:foreground="?android:attr/selectableItemBackground"
+            card_view:cardCornerRadius="2dp"
+            card_view:cardElevation="2dp">
+
+            <TextView
+                android:id="@+id/fab_tag_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:layout_margin="5dp"
+                android:text="New Text" />
+
+        </android.support.v7.widget.CardView>
+
+    </FrameLayout>
+
+    <com.vicmns.demoinboxlikefab.FloatingActionButton
+        android:id="@+id/fab_item"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:background="@drawable/fab_background"
+        android:layout_gravity="center"
+        android:elevation="@dimen/fab_elevation"
+        android:stateListAnimator="@animator/fab_anim">
+
+        <ImageView
+            android:layout_width="@dimen/fab_icon_size"
+            android:layout_height="@dimen/fab_icon_size"
+            android:layout_gravity="center"
+            android:duplicateParentState="true"
+            android:src="@drawable/fab_icons" />
+
+    </com.vicmns.demoinboxlikefab.FloatingActionButton>
+
+
+</LinearLayout>
