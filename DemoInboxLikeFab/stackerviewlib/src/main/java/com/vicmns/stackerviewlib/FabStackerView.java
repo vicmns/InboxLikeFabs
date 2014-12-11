@@ -34,8 +34,8 @@ public class FabStackerView {
     private View mMainView;
     private RecyclerView mFabRecyclerView;
     private RecyclerView.Adapter<?> mFabAdapter;
-    private View mMainFab, mMainFabItemLayout;
-    private ImageView mMainFabImageView;
+    private View mMainFabItemLayout;
+    private FloatingActionButton mMainFab;
     private TextView mMainFabTag;
     private Animation mRotateRightAnimation, mRotateLeftAnimation, mAppearAnimation, mHideAnimation;
 
@@ -60,8 +60,7 @@ public class FabStackerView {
         LayoutInflater layoutInflater = LayoutInflater.from(parentView.getContext());
         mMainView = layoutInflater.inflate(R.layout.fab_list_layout, parentView, false);
         mMainFabItemLayout = mMainView.findViewById(R.id.fab_item_main_layout);
-        mMainFab = mMainView.findViewById(R.id.fab_item);
-        mMainFabImageView = (ImageView) mMainFab.findViewById(R.id.fab_item_image_view);
+        mMainFab = (FloatingActionButton) mMainView.findViewById(R.id.fab_item);
         mMainFabTag =  (TextView) mMainView.findViewById(R.id.fab_tag_item);
         mMainView.setVisibility(View.GONE);
         parentView.addView(mMainView);
@@ -136,9 +135,9 @@ public class FabStackerView {
 
     public void initAnchoredFab(FabStackerItem fabStackerItem) {
         if(fabStackerItem.getFabResDrawable() != null) {
-            mMainFabImageView.setImageDrawable(fabStackerItem.getFabResDrawable());
+            mMainFab.getCenterImageView().setImageDrawable(fabStackerItem.getFabResDrawable());
         } else {
-            mMainFabImageView.setImageResource(fabStackerItem.getFabResId());
+            mMainFab.getCenterImageView().setImageResource(fabStackerItem.getFabResId());
         }
 
         if(fabStackerItem.getFabBackgroundDrawable() != null) {

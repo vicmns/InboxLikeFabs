@@ -17,19 +17,39 @@
 package com.vicmns.stackerviewlib;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Outline;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.Checkable;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+
+import com.vicmns.myapplication.R;
 
 /**
  * A Floating Action Button is a {@link android.widget.Checkable} view distinguished by a circled
  * icon floating above the UI, with special motion behaviors.
  */
 public class FloatingActionButton extends FrameLayout implements Checkable {
+    private static final int NORMAL_SIZE = 0;
+    private static final int SMALL_SIZE = 1;
+
+    private Context mContext;
+    private int mFabSize;
+
+    private ImageView mImageView;
+    private Drawable mImageViewDrawable;
 
     /**
      * Interface definition for a callback to be invoked when the checked state
@@ -76,13 +96,53 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
     public FloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr,
                                 int defStyleRes) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
+        initView(context, attrs, defStyleAttr);
+    }
 
+    private void initView(Context context,  AttributeSet attrs, int defStyle) {
+        TypedArray a;
+        Resources.Theme theme = context.getTheme();
+        if (theme == null) {
+            return;
+        }
+
+        a = theme.obtainStyledAttributes(attrs, R.styleable.FloatingActionButton, defStyle, 0);
+        if (a == null) {
+            return;
+        }
+        initAttrs(a);
+        a.recycle();
+
+        addImageView(context);
         setClickable(true);
+        initBackground();
+    }
 
+    private void initAttrs(TypedArray a) {
+        Drawable temp = a.getDrawable(R.styleable.FloatingActionButton_fabCenterDrawable);
+        setImageViewDrawable(temp);
+    }
+
+    private void addImageView(Context context) {
+        mImageView = new ImageView(context);
+        LayoutParams layoutParams =
+                new LayoutParams((int) getResources().getDimension(R.dimen.fab_icon_size),
+                        (int) getResources().getDimension(R.dimen.fab_icon_size));
+        layoutParams.gravity = Gravity.CENTER;
+
+        mImageView.setDuplicateParentStateEnabled(true);
+        mImageView.setLayoutParams(layoutParams);
+        if(mImageViewDrawable != null) mImageView.setImageDrawable(mImageViewDrawable);
+
+        addView(mImageView);
+    }
+
+    private void initBackground() {
         // Set the outline provider for this view. The provider is given the outline which it can
         // then modify as needed. In this case we set the outline to be an oval fitting the height
         // and width.
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if(isLollipop()) {
             setOutlineProvider(new ViewOutlineProvider() {
                 @Override
                 public void getOutline(View view, Outline outline) {
@@ -92,7 +152,70 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
 
             // Finally, enable clipping to the outline, using the provider we set above
             setClipToOutline(true);
+        } else {
+            Drawable background = getBackground();
+
+            if (background instanceof LayerDrawable) {
+                LayerDrawable layers = (LayerDrawable) background;
+                if (layers.getNumberOfLayers() == 2) {
+                    Drawable shadow = layers.getDrawable(0);
+                    Drawable circle = layers.getDrawable(1);
+
+                    if (shadow instanceof GradientDrawable) {
+                        ((GradientDrawable) shadow.mutate()).setGradientRadius(getShadowRadius(shadow, circle));
+                    }
+
+                    /*if (circle instanceof GradientDrawable) {
+                        initCircleDrawable(circle);
+                    }*/
+                }
+            } /*else if (background instanceof GradientDrawable) {
+                initCircleDrawable(background);
+            }*/
+
+            setBackground(background);
+            ViewCompat.setElevation(this, (int) getResources().getDimension(R.dimen.fab_elevation));
         }
+    }
+
+    private boolean isLollipop() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    /**
+     * Calculates required radius of shadow.
+     *
+     * @param shadow underlay drawable
+     * @param circle overlay drawable
+     * @return calculated radius, always >= 1
+     */
+    protected static int getShadowRadius(Drawable shadow, Drawable circle) {
+        int radius = 0;
+
+        if (shadow != null && circle != null) {
+            Rect rect = new Rect();
+            radius = (circle.getIntrinsicWidth() + (shadow.getPadding(rect) ? rect.left + rect.right : 0)) / 2;
+        }
+
+        return Math.max(1, radius);
+    }
+
+    public Drawable getImageViewDrawable() {
+        return mImageViewDrawable;
+    }
+
+    public void setImageViewDrawable(Drawable mImageViewDrawable) {
+        this.mImageViewDrawable = mImageViewDrawable;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        /*int size = getWidth();
+        if (!isLollipop()) {
+            size += getResources().getDimension(R.dimen.fab_elevation) * 2;
+        }
+        setMeasuredDimension(size, size);*/
     }
 
     /**
@@ -112,6 +235,10 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
         if (mOnCheckedChangeListener != null) {
             mOnCheckedChangeListener.onCheckedChanged(this, checked);
         }
+    }
+
+    public ImageView getCenterImageView() {
+        return mImageView;
     }
 
     /**
