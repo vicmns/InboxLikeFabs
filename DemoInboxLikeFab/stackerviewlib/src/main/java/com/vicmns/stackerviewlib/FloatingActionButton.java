@@ -276,7 +276,7 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
         super.onSizeChanged(w, h, oldw, oldh);
         // As we have changed size, we should invalidate the outline so that is the the
         // correct size
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if(isLollipop()) {
             invalidateOutline();
         } else {
             initPreLollipopBackground();
@@ -341,11 +341,16 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
     }
 
     public void setFabBackground(Drawable drawable) {
-        StateListDrawable cDrawable = new StateListDrawable();
-        cDrawable.addState(new int[]{android.R.attr.state_pressed}, createDrawable(new int[]{android.R.attr.state_pressed}, drawable));
-        cDrawable.addState(new int[]{}, createDrawable(new int[]{}, drawable));
-
-        setBackground(cDrawable);
+        if(isLollipop()) {
+            setBackground(drawable);
+            invalidateOutline();
+        } else {
+            StateListDrawable cDrawable = new StateListDrawable();
+            cDrawable.addState(new int[]{android.R.attr.state_pressed}, createDrawable(new int[]{android.R.attr.state_pressed}, drawable));
+            cDrawable.addState(new int[]{}, createDrawable(new int[]{}, drawable));
+            setMarginsWithoutShadow();
+            setBackground(cDrawable);
+        }
     }
 
     public void setFabBackground(int resid) {
