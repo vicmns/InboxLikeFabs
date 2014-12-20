@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.vicmns.stackerviewlib.FabStackerAdapter;
 import com.vicmns.stackerviewlib.FabStackerItem;
 import com.vicmns.stackerviewlib.FabStackerView;
+import com.vicmns.stackerviewlib.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab_1);
+        FloatingActionButton    fab1 = (FloatingActionButton) findViewById(R.id.fab_1);
         FabStackerAdapter fabStackerAdapter = new FabStackerAdapter();
 
         mFabStackerItems = new ArrayList<>();

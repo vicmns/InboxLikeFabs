@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -62,7 +63,7 @@ public class FabStackerView {
         mMainFabItemLayout = mMainView.findViewById(R.id.fab_item_main_layout);
         mMainFab = (FloatingActionButton) mMainView.findViewById(R.id.fab_item);
         mMainFabTag =  (TextView) mMainView.findViewById(R.id.fab_tag_item);
-        mMainView.setVisibility(View.GONE);
+        mMainView.setVisibility(View.INVISIBLE);
         parentView.addView(mMainView);
 
         mMainView.setOnTouchListener(new View.OnTouchListener() {
@@ -89,6 +90,9 @@ public class FabStackerView {
 
     private void setupRecyclerView() {
         mFabRecyclerView = (RecyclerView) mMainView.findViewById(R.id.fabs_recycler_view);
+        if(!isLollipop()) {
+            mFabRecyclerView.setPadding(0, 0 ,(int) mFabRecyclerView.getResources().getDimension(R.dimen.fab_support_elevation), 0);
+        }
 
         mFabRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -120,6 +124,10 @@ public class FabStackerView {
         linearLayoutManager.setReverseLayout(true);
         mFabRecyclerView.setLayoutManager(linearLayoutManager);
         mFabRecyclerView.setHasFixedSize(true);
+    }
+
+    private boolean isLollipop() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     private static float distance(float x1, float y1, float x2, float y2, Context context) {
@@ -298,7 +306,7 @@ public class FabStackerView {
             return this;
         }
 
-        public Builder anchorStackToFab(View fabToAnchor) {
+        public Builder anchorStackToFab(final View fabToAnchor) {
             fabStackerView.setMainFabPosition(fabToAnchor);
             return this;
         }

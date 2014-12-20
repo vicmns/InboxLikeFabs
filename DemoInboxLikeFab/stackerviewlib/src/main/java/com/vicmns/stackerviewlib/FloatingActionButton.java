@@ -1,3 +1,4 @@
+package com.vicmns.stackerviewlib;
 /*
  * Copyright 2014, The Android Open Source Project
  *
@@ -14,20 +15,19 @@
  * limitations under the License.
  */
 
-package com.vicmns.stackerviewlib;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Outline;
-import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -45,8 +45,7 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
     private static final int NORMAL_SIZE = 0;
     private static final int SMALL_SIZE = 1;
 
-    private Context mContext;
-    private int mFabSize;
+    private int mFabSize, mShadowSize;
 
     private ImageView mImageView;
     private Drawable mImageViewDrawable;
@@ -96,8 +95,12 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
     public FloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr,
                                 int defStyleRes) {
         super(context, attrs, defStyleAttr);
-        mContext = context;
+        initVariables();
         initView(context, attrs, defStyleAttr);
+    }
+
+    private void initVariables() {
+        mShadowSize = (int) getResources().getDimension(R.dimen.fab_support_elevation);
     }
 
     private void initView(Context context,  AttributeSet attrs, int defStyle) {
@@ -116,12 +119,19 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
 
         addImageView(context);
         setClickable(true);
-        initBackground();
+
+        if(isLollipop()) {
+            initLollipopBackground();
+        }
     }
 
     private void initAttrs(TypedArray a) {
-        Drawable temp = a.getDrawable(R.styleable.FloatingActionButton_fabCenterDrawable);
-        setImageViewDrawable(temp);
+        if(a.getInt(R.styleable.FloatingActionButton_fabSize, NORMAL_SIZE) == SMALL_SIZE) {
+            mFabSize = (int) getResources().getDimension(R.dimen.fab_size_small);
+        } else {
+            mFabSize = (int) getResources().getDimension(R.dimen.fab_size);
+        }
+        setImageViewDrawable(a.getDrawable(R.styleable.FloatingActionButton_fabCenterDrawable));
     }
 
     private void addImageView(Context context) {
@@ -138,66 +148,24 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
         addView(mImageView);
     }
 
-    private void initBackground() {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void initLollipopBackground() {
         // Set the outline provider for this view. The provider is given the outline which it can
         // then modify as needed. In this case we set the outline to be an oval fitting the height
         // and width.
-        if(isLollipop()) {
-            setOutlineProvider(new ViewOutlineProvider() {
-                @Override
-                public void getOutline(View view, Outline outline) {
-                    outline.setOval(0, 0, getWidth(), getHeight());
-                }
-            });
+        setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setOval(0, 0, getWidth(), getHeight());
+            }
+        });
 
-            // Finally, enable clipping to the outline, using the provider we set above
-            setClipToOutline(true);
-        } else {
-            Drawable background = getBackground();
-
-            if (background instanceof LayerDrawable) {
-                LayerDrawable layers = (LayerDrawable) background;
-                if (layers.getNumberOfLayers() == 2) {
-                    Drawable shadow = layers.getDrawable(0);
-                    Drawable circle = layers.getDrawable(1);
-
-                    if (shadow instanceof GradientDrawable) {
-                        ((GradientDrawable) shadow.mutate()).setGradientRadius(getShadowRadius(shadow, circle));
-                    }
-
-                    /*if (circle instanceof GradientDrawable) {
-                        initCircleDrawable(circle);
-                    }*/
-                }
-            } /*else if (background instanceof GradientDrawable) {
-                initCircleDrawable(background);
-            }*/
-
-            setBackground(background);
-            ViewCompat.setElevation(this, (int) getResources().getDimension(R.dimen.fab_elevation));
-        }
+        // Finally, enable clipping to the outline, using the provider we set above
+        setClipToOutline(true);
     }
 
     private boolean isLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-    }
-
-    /**
-     * Calculates required radius of shadow.
-     *
-     * @param shadow underlay drawable
-     * @param circle overlay drawable
-     * @return calculated radius, always >= 1
-     */
-    protected static int getShadowRadius(Drawable shadow, Drawable circle) {
-        int radius = 0;
-
-        if (shadow != null && circle != null) {
-            Rect rect = new Rect();
-            radius = (circle.getIntrinsicWidth() + (shadow.getPadding(rect) ? rect.left + rect.right : 0)) / 2;
-        }
-
-        return Math.max(1, radius);
     }
 
     public Drawable getImageViewDrawable() {
@@ -208,14 +176,56 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
         this.mImageViewDrawable = mImageViewDrawable;
     }
 
+    public int getFabSize() {
+        return mFabSize;
+    }
+
+    public void setFabSize(int mFabSize) {
+        this.mFabSize = mFabSize;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        /*int size = getWidth();
+        int width = mFabSize;
+        int height = mFabSize;
         if (!isLollipop()) {
-            size += getResources().getDimension(R.dimen.fab_elevation) * 2;
+            width += mShadowSize * 2;
+            height += mShadowSize * 2;
         }
-        setMeasuredDimension(size, size);*/
+        setMeasuredDimension(width, height);
+
+    }
+
+    private int measureSize(int measureSpec) {
+        int size;
+
+        int measureMode = MeasureSpec.getMode(measureSpec);
+        int measureSize = MeasureSpec.getSize(measureSpec);
+
+        //Measure Width
+        if (measureMode == MeasureSpec.EXACTLY) {
+            //Must be this size
+            size = measureSize;
+        } else if (measureMode == MeasureSpec.AT_MOST) {
+            //Can't be bigger than...
+            size = measureSize;
+        } else
+            size = measureSize;
+
+        return size;
+    }
+
+    private void setMarginsWithoutShadow() {
+        if (getLayoutParams() instanceof MarginLayoutParams) {
+            MarginLayoutParams layoutParams = (MarginLayoutParams) getLayoutParams();
+            int leftMargin = layoutParams.leftMargin - mShadowSize;
+            int topMargin = layoutParams.topMargin - mShadowSize;
+            int rightMargin = layoutParams.rightMargin - mShadowSize;
+            int bottomMargin = layoutParams.bottomMargin - mShadowSize;
+            layoutParams.setMargins(leftMargin, topMargin, rightMargin, bottomMargin);
+            requestLayout();
+        }
     }
 
     /**
@@ -261,24 +271,64 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
         setChecked(!mChecked);
     }
 
-    /**
-     * Override performClick() so that we can toggle the checked state when the view is clicked
-     */
-    @Override
-    public boolean performClick() {
-        //toggle();
-        return super.performClick();
-    }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
         // As we have changed size, we should invalidate the outline so that is the the
         // correct size
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             invalidateOutline();
+        } else {
+            initPreLollipopBackground();
+            setMarginsWithoutShadow();
         }
+    }
+
+    private void initPreLollipopBackground() {
+        StateListDrawable drawable = new StateListDrawable();
+        drawable.addState(new int[]{android.R.attr.state_pressed}, createDrawable(new int[]{android.R.attr.state_pressed}));
+        drawable.addState(new int[]{}, createDrawable(new int[]{}));
+        setBackground(drawable);
+        /*
+         * Right now the ViewCompat library does not nothing when setting the elevation, maye perhaps
+         * in the near future this will be implemented.
+         */
+        //ViewCompat.setElevation(this, (int) getResources().getDimension(R.dimen.fab_elevation));
+    }
+
+    private Drawable createDrawable(int[] state) {
+        Drawable shadowDrawable = getShadowDrawable();
+        LayerDrawable layerDrawable;
+        if(getBackground() instanceof  StateListDrawable) {
+            StateListDrawable drawable = (StateListDrawable) getBackground();
+            drawable.setState(state);
+            Drawable cDrawable = drawable.getCurrent();
+            cDrawable.setBounds(0, 0 , mFabSize, mFabSize);
+            layerDrawable = new LayerDrawable(new Drawable[]{shadowDrawable, cDrawable});
+        }
+        else {
+            layerDrawable = new LayerDrawable(new Drawable[]{shadowDrawable, getBackground()});
+        }
+
+        layerDrawable.setLayerInset(1, mShadowSize, mShadowSize, mShadowSize, mShadowSize);
+
+        return layerDrawable;
+    }
+
+    private Drawable getShadowDrawable() {
+        Drawable tempShadowDrawable;
+        int shadowDrawableSize = mFabSize + 2 * mShadowSize;
+        if(mFabSize > (int) getResources().getDimension(R.dimen.fab_size_small)) {
+            tempShadowDrawable = getResources().getDrawable(R.drawable.shadow);
+        } else {
+            tempShadowDrawable = getResources().getDrawable(R.drawable.shadow_mini);
+        }
+        Bitmap b = ((BitmapDrawable)tempShadowDrawable).getBitmap();
+        Bitmap bitmapResize = Bitmap.createScaledBitmap(b, shadowDrawableSize, shadowDrawableSize, false);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmapResize);
+        bitmapDrawable.setGravity(Gravity.CENTER);
+        bitmapDrawable.setAntiAlias(true);
+        return bitmapDrawable;
     }
 
     @Override
@@ -288,5 +338,36 @@ public class FloatingActionButton extends FrameLayout implements Checkable {
             mergeDrawableStates(drawableState, CHECKED_STATE_SET);
         }
         return drawableState;
+    }
+
+    public void setFabBackground(Drawable drawable) {
+        StateListDrawable cDrawable = new StateListDrawable();
+        cDrawable.addState(new int[]{android.R.attr.state_pressed}, createDrawable(new int[]{android.R.attr.state_pressed}, drawable));
+        cDrawable.addState(new int[]{}, createDrawable(new int[]{}, drawable));
+
+        setBackground(cDrawable);
+    }
+
+    public void setFabBackground(int resid) {
+        setFabBackground(getResources().getDrawable(resid));
+    }
+
+    private Drawable createDrawable(int[] state, Drawable newDrawable) {
+        Drawable shadowDrawable = getShadowDrawable();
+        LayerDrawable layerDrawable;
+        if(newDrawable instanceof  StateListDrawable) {
+            StateListDrawable drawable = (StateListDrawable) newDrawable;
+            drawable.setState(state);
+            Drawable cDrawable = drawable.getCurrent();
+            cDrawable.setBounds(0, 0 , mFabSize, mFabSize);
+            layerDrawable = new LayerDrawable(new Drawable[]{shadowDrawable, cDrawable});
+        }
+        else {
+            layerDrawable = new LayerDrawable(new Drawable[]{shadowDrawable, newDrawable});
+        }
+
+        layerDrawable.setLayerInset(1, mShadowSize, mShadowSize, mShadowSize, mShadowSize);
+
+        return layerDrawable;
     }
 }

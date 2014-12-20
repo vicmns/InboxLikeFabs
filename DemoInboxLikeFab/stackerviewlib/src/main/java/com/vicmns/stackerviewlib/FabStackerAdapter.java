@@ -59,9 +59,9 @@ public class FabStackerAdapter extends RecyclerView.Adapter<FabStackerAdapter.Fa
 
     private void setFabBackgroundDrawable(FabViewHolder holder, FabStackerItem fabStackerItem) {
         if(fabStackerItem.getFabBackgroundDrawable() != null) {
-            holder.fab.setBackground(fabStackerItem.getFabBackgroundDrawable());
+            holder.fab.setFabBackground(fabStackerItem.getFabBackgroundDrawable());
         } else {
-            holder.fab.setBackgroundResource(fabStackerItem.getFabBackgroundResId());
+            holder.fab.setFabBackground(fabStackerItem.getFabBackgroundResId());
         }
     }
 

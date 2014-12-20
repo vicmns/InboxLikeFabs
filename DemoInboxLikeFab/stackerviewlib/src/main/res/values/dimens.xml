@@ -3,5 +3,7 @@
     <dimen name="fab_drawable_layout_size">56dp</dimen>
     <dimen name="fab_item_main_layout_min_size">72dp</dimen>
 
+    <dimen name="fab_support_elevation">12dp</dimen>
+
     <dimen name="fab_recycler_view_bottom_margin">5dp</dimen>
 </resources>
